@@ -1,0 +1,155 @@
+
+
+<h1><%=@hello %></h1>
+
+<canvas id="draw-area" width="300" height="300"></canvas>
+<button id="clear" type="button">Clear</button>
+<div id="result">
+    
+</div>
+
+<script type="text/javascript">
+    var canvas, ctx, flag = false,
+        prevX = 0,
+        currX = 0,
+        prevY = 0,
+        currY = 0,
+        dot_flag = false,
+        stroke_order = 0;
+        stroke_number = 0;
+        sequence = []; 
+
+    var x = "black",
+        y = 2;
+
+    function init() {
+        canvas = document.getElementById('draw-area');
+        ctx = canvas.getContext("2d");
+        w = canvas.width;
+        h = canvas.height;
+
+        canvas.addEventListener("mousemove", function (e) {
+            findxy('move', e)
+        }, false);
+        canvas.addEventListener("mousedown", function (e) {
+            findxy('down', e)
+        }, false);
+        canvas.addEventListener("mouseup", function (e) {
+            findxy('up', e)
+        }, false);
+    }
+
+    function findxy(res, e) {
+        if (res == 'down') {
+            prevX = currX;
+            prevY = currY;
+            currX = e.clientX - canvas.offsetLeft;
+            currY = e.clientY - canvas.offsetTop;
+
+            flag = true;
+            dot_flag = true;
+            if (dot_flag) {
+                ctx.beginPath();
+                ctx.fillStyle = x;
+                ctx.fillRect(currX, currY, 2, 2);
+                ctx.closePath();
+                dot_flag = false;
+                addPoint(currX, currY);
+            } 
+        }
+        if (res == 'up') {
+            flag = false;
+            stroke_order++;
+            stroke_number = 0;
+            sendRequest();
+        }
+        if (res == 'move') {
+            if (flag) {
+                prevX = currX;
+                prevY = currY;
+                currX = e.clientX - canvas.offsetLeft;
+                currY = e.clientY - canvas.offsetTop;
+                draw();
+                addPoint(currX, currY);
+            }
+        }
+    }
+
+    function draw() {
+        ctx.beginPath();
+        ctx.moveTo(prevX, prevY);
+        ctx.lineTo(currX, currY);
+        ctx.strokeStyle = x;
+        ctx.lineWidth = y;
+        ctx.stroke();
+        ctx.closePath();
+        
+    }
+
+    function erase() {
+        ctx.clearRect(0, 0, w, h);
+        var result_tab = document.getElementById("result");
+        result_tab.innerHTML = "";
+        stroke_order = 0;
+	    sequence = []; 
+	    stroke_number = 0;
+    }
+
+    function sendRequest() {
+        var data = makeMessage();
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4){
+                if(xhr.status == 200) {
+                    var obj = JSON.parse(xhr.response);
+                    updateResult(obj);
+                }
+                
+            }
+        };
+        xhr.open('GET', '/home/classify?' + data, true);
+        xhr.send();
+    }
+    function makeMessage() {
+        var str = "char_data=(character+(width+" + canvas.width + ")(height+" + canvas.height + ")(strokes+";
+
+        //strokes
+        for (var i=0; i<sequence.length; i++) {
+            str += '(';
+            for (var j=0; j<sequence[i].length; j++) {
+                str += '(' + sequence[i][j].x + "+" + sequence[i][j].y + ')';
+            }
+            str += ')';
+        }
+        str += ")";
+        return str;
+    }
+    function addPoint (x, y) {
+        if (stroke_number == 0) {
+            sequence[stroke_order] = new Array; 
+        }
+        sequence[stroke_order][stroke_number] = { x:x, y:y }; 
+        stroke_number++;
+    }
+
+    function updateResult(res) {
+        var result_tab = document.getElementById("result");
+        var predicted_list = res["result"];
+        result_tab.innerHTML = "";
+        for (i = 0; i < predicted_list.length; i++) {
+            var para = document.createElement("p");
+            var node = document.createTextNode(predicted_list[i][0] + ': ' + predicted_list[i][1]);
+            para.appendChild(node);
+            result_tab.appendChild(para);
+        }
+    }
+
+    document.body.onload = function(){
+      init();
+    }
+
+    document.getElementById('clear').onclick = function(){
+      erase();
+    }
+</script>
