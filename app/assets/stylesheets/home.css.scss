@@ -3,5 +3,15 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #draw-area {
-    background-color: green;
+    background-color: gray;
+    float: left;
+}
+
+#result {
+    float: left;
+    margin-left: 10px;
+}
+
+#clear {
+    display: block;
 }
