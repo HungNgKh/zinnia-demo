@@ -7,7 +7,7 @@ static const char *input =
 
 int main(int argc, char **argv) {
   zinnia::Recognizer *recognizer = zinnia::Recognizer::create();
-  if (!recognizer->open("/usr/local/lib/zinnia/model/tomoe/handwriting-ja.model")) {
+  if (!recognizer->open("handwriting-ja.model")) {
     std::cerr << recognizer->what() << std::endl;
     return -1;
   }
