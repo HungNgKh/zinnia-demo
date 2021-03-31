@@ -11,17 +11,17 @@ class HomeController < ApplicationController
         r = Zinnia::Recognizer.new
         r.open("/usr/local/lib/zinnia/model/tomoe/handwriting-ja.model")
 
-            if (!s.parse(char_data))
-                return render :status => 500
-            end
-            
-            result = r.classify(s, 10)
-            size = result.size()
-            result_json = []
-            size.times { |i|
-                result_json << [result.value(i).force_encoding("UTF-8"), result.score(i)]
-            }
+        if (!s.parse(char_data))
+            return render :status => 500
+        end
+        
+        result = r.classify(s, 10)
+        size = result.size()
+        result_json = []
+        size.times { |i|
+            result_json << [result.value(i).force_encoding("UTF-8"), result.score(i)]
+        }
 
-            render :json => {result: result_json}.to_json, :status => 200 
+        render :json => {result: result_json}.to_json, :status => 200 
     end
 end
