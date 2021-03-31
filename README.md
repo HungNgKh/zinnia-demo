@@ -34,3 +34,31 @@ make install
 ## Demo
 
 ![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/demo.gif)
+
+# WASM build
+
+## Requirement
+
+- emscripten
+https://emscripten.org/docs/getting_started/downloads.html
+
+## Build
+
+### Input
+- ![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/lib/example.cpp)
+
+### 
+```
+cd zinnia-0.0.6
+./emconfigure ./configure
+./emmake make
+cp /usr/local/lib/zinnia/model/tomoe/handwriting-ja.model ./
+cp ~/zinnia-demo/libs/example.cpp ./
+em++ -o example.html -WASM=1 -s ALLOW_MEMORY_GROWTH=1 example.cpp recognizer.o character.o libzinnia.o param.o feature.o sexp.o svm.o trainer.o --embed-file=handwriting-ja.model
+```
+
+## Output
+
+- example.html
+- example.js
+- example.wasm
