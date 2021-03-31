@@ -57,8 +57,18 @@ cp ~/zinnia-demo/libs/example.cpp ./
 em++ -o example.html -WASM=1 -s ALLOW_MEMORY_GROWTH=1 example.cpp recognizer.o character.o libzinnia.o param.o feature.o sexp.o svm.o trainer.o --embed-file=handwriting-ja.model
 ```
 
-## Output
+### Output
 
 - example.html
 - example.js
 - example.wasm
+
+## Demo
+
+```
+cp example.html public/
+cp example.wasm public/
+cp example.js public/
+rails s
+```
+-> Go to http://localhost:3000/example.html
