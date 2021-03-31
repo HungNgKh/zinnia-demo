@@ -45,7 +45,7 @@ https://emscripten.org/docs/getting_started/downloads.html
 ## Build
 
 ### Input
-- ![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/lib/example.cpp)
+- ![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/lib/example.cpp)
 
 ### 
 ```
