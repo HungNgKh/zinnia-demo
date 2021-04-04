@@ -33,7 +33,7 @@ make install
 
 ## Demo
 
-![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/demo.mov)
+![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/demo.gif)
 
 # WASM build
 
