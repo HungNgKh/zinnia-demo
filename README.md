@@ -67,8 +67,7 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
     
 - classify(input) // get saved model file from indexedDB then classify the input and print result.
   - Parameter:
-    - input: formated handwriting strokes 
-      Example: "(character (value と)(width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))"
+    - input: formated handwriting strokes. Example: "(character (value と)(width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))"
   - Return:
 
 ### Import module
