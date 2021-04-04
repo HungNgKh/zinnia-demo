@@ -33,7 +33,7 @@ make install
 
 ## Demo
 
-![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/demo.gif)
+![demo](https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/demo.mov)
 
 # WASM build
 
@@ -45,30 +45,44 @@ https://emscripten.org/docs/getting_started/downloads.html
 ## Build
 
 ### Input
-- https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/lib/example.cpp
+- https://github.com/aHungNguyenKhanh/zinnia-demo/blob/main/lib/classifier.cpp
 
 ### 
 ```
-cd zinnia-0.0.6
-./emconfigure ./configure
-./emmake make
-cp /usr/local/lib/zinnia/model/tomoe/handwriting-ja.model ./
-cp ~/zinnia-demo/libs/example.cpp ./
-em++ -o example.html -WASM=1 -s ALLOW_MEMORY_GROWTH=1 example.cpp recognizer.o character.o libzinnia.o param.o feature.o sexp.o svm.o trainer.o --embed-file=handwriting-ja.model
+cp zinnia-demo/libs/
+em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifier.cpp recognizer.o character.o libzinnia.o param.o feature.o sexp.o svm.o trainer.o -s EXPORT_NAME="'Classifier'" -s ALLOW_MEMORY_GROWTH=1
 ```
 
 ### Output
 
-- example.html
-- example.js
-- example.wasm
+- classifier.js
+- classifier.wasm
 
-## Demo
+## WebAssembly module
+
+### Functions
+- load() //Load model file from remote server to indexedDB 
+  + Parameter:
+  + Return: 
+    
+- classify(input) // get saved model file from indexedDB then classify the input and print result.
+  + Parameter:
+    ・input: formated handwriting strokes (Example: "(character (value と)(width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))")
+  + Return:
+
+
+### Import module
 
 ```
-cp example.html public/
-cp example.wasm public/
-cp example.js public/
-rails s
+<script async type="text/javascript" src="classifier.js"></script>
 ```
--> Go to http://localhost:3000/example.html
+
+### Use
+
+```
+Classifier.load();
+```
+
+```
+Classifier.classify("input");
+```
