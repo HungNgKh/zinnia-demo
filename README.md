@@ -61,7 +61,7 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 ## WebAssembly module
 
 ### Functions
-- load() //Load model file from remote server to indexedDB 
+- preload() //Load model file from remote server to indexedDB 
   - Parameter:
   - Return: 
     
@@ -79,7 +79,7 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 ### Use
 
 ```
-Classifier.load();
+Classifier.preload();
 ```
 
 ```
