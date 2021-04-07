@@ -88,9 +88,34 @@ Classifier.classify("input");
 ## Sequence
 
 ```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+sequenceDiagram;
+  participant Javascript
+  participant ClassifierModule
+  participant IndexedDB
+  participant RemoteServer
+  
+
+  Javascript->>ClassifierModule: import
+  Javascript->>ClassifierModule: async load()
+  activate ClassifierModule
+  ClassifierModule->>RemoteServer: FETCH request
+  RemoteServer->>IndexedDB: download to
+  RemoteServer-->>ClassifierModule: FETCH response
+  alt success
+    ClassifierModule-->>Javascript: success
+  else failed
+    ClassifierModule-->>Javascript: error
+  end
+  deactivate ClassifierModule
+
+  Javascript->>ClassifierModule: async classify(input)
+  activate ClassifierModule
+  ClassifierModule->>IndexedDB: FETCH model binary
+  IndexedDB-->>ClassifierModule: load binary to memory
+  alt success
+    ClassifierModule-->>Javascript: success
+  else failed
+    ClassifierModule-->>Javascript: error
+  end
+  deactivate ClassifierModule
 ```
