@@ -5473,8 +5473,84 @@ var ASM_CONSTS = {
     delete Fetch.xhrs[id-1];
   }
 
+  function requireRegisteredType(rawType, humanName) {
+      var impl = registeredTypes[rawType];
+      if (undefined === impl) {
+          throwBindingError(humanName + " has unknown type " + getTypeName(rawType));
+      }
+      return impl;
+    }
+  function __emval_lookupTypes(argCount, argTypes) {
+      var a = new Array(argCount);
+      for (var i = 0; i < argCount; ++i) {
+          a[i] = requireRegisteredType(
+              HEAP32[(argTypes >> 2) + i],
+              "parameter " + i);
+      }
+      return a;
+    }
+  
+  function requireHandle(handle) {
+      if (!handle) {
+          throwBindingError('Cannot use deleted val. handle = ' + handle);
+      }
+      return emval_handle_array[handle].value;
+    }
+  function __emval_call(handle, argCount, argTypes, argv) {
+      handle = requireHandle(handle);
+      var types = __emval_lookupTypes(argCount, argTypes);
+  
+      var args = new Array(argCount);
+      for (var i = 0; i < argCount; ++i) {
+          var type = types[i];
+          args[i] = type['readValueFromPointer'](argv);
+          argv += type['argPackAdvance'];
+      }
+  
+      var rv = handle.apply(undefined, args);
+      return __emval_register(rv);
+    }
+
+
+  var emval_symbols={};
+  function getStringOrSymbol(address) {
+      var symbol = emval_symbols[address];
+      if (symbol === undefined) {
+          return readLatin1String(address);
+      } else {
+          return symbol;
+      }
+    }
+  
+  function emval_get_global() {
+      if (typeof globalThis === 'object') {
+        return globalThis;
+      }
+      return (function(){
+        return Function;
+      })()('return this')();
+    }
+  function __emval_get_global(name) {
+      if (name===0) {
+        return __emval_register(emval_get_global());
+      } else {
+        name = getStringOrSymbol(name);
+        return __emval_register(emval_get_global()[name]);
+      }
+    }
+
+  function __emval_incref(handle) {
+      if (handle > 4) {
+          emval_handle_array[handle].refcount += 1;
+      }
+    }
+
   function _abort() {
       abort();
+    }
+
+  function _callback(msg) {
+        console.log(msg);
     }
 
   function _emscripten_is_main_browser_thread() {
@@ -6590,7 +6666,12 @@ var asmLibraryArg = {
   "_embind_register_std_wstring": __embind_register_std_wstring,
   "_embind_register_void": __embind_register_void,
   "_emscripten_fetch_free": __emscripten_fetch_free,
+  "_emval_call": __emval_call,
+  "_emval_decref": __emval_decref,
+  "_emval_get_global": __emval_get_global,
+  "_emval_incref": __emval_incref,
   "abort": _abort,
+  "callback": _callback,
   "emscripten_is_main_browser_thread": _emscripten_is_main_browser_thread,
   "emscripten_longjmp": _emscripten_longjmp,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
@@ -6639,11 +6720,6 @@ var ___embind_register_native_and_builtin_types = Module["___embind_register_nat
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */
-var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function() {
-  return (_emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = Module["asm"]["emscripten_stack_get_end"]).apply(null, arguments);
-};
-
-/** @type {function(...*):?} */
 var stackSave = Module["stackSave"] = createExportWrapper("stackSave");
 
 /** @type {function(...*):?} */
@@ -6660,6 +6736,11 @@ var _emscripten_stack_init = Module["_emscripten_stack_init"] = function() {
 /** @type {function(...*):?} */
 var _emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = function() {
   return (_emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = Module["asm"]["emscripten_stack_get_free"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function() {
+  return (_emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = Module["asm"]["emscripten_stack_get_end"]).apply(null, arguments);
 };
 
 /** @type {function(...*):?} */
