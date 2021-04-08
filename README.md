@@ -95,8 +95,6 @@ sequenceDiagram;
   participant IndexedDB
   participant RemoteServer
   
-
-  Javascript->>ClassifierModule: import
   Javascript->>ClassifierModule: async load()
   activate ClassifierModule
   ClassifierModule->>RemoteServer: FETCH request
