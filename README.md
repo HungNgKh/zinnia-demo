@@ -117,7 +117,6 @@ sequenceDiagram;
   participant Javascript
   participant ClassifierModule
   participant IndexedDB
-  participant RemoteServer
 
   Javascript->>ClassifierModule: async classify(input)
   activate ClassifierModule
