@@ -1,26 +1,24 @@
-#include <iostream>
 #include <fstream>
 #include <emscripten/bind.h>
 #include <emscripten/fetch.h>
 #include <emscripten.h>
+#include <sanitizer/lsan_interface.h>
 #include "zinnia.h"
 
 using namespace emscripten;
 
-static std::string INPUT = NULL;
+static std::string INPUT;
+static char *binary;
 
 val call_back = val::global("");
-extern "C" {
-  extern void callback(std::string);
-}
 
 void success(emscripten_fetch_t *fetch) {
-  std::cerr << "IDB store successed." << std::endl;
+  // std::cerr << "IDB store successed." << std::endl;
   emscripten_fetch_close(fetch);
 }
 
 void failure(emscripten_fetch_t *fetch) {
-  std::cerr << "IDB store failed." << std::endl;
+  // std::cerr << "IDB store failed." << std::endl;
   emscripten_fetch_close(fetch);
 }
 
@@ -41,28 +39,29 @@ void preload() {
 }
 
 void fetch_success(emscripten_fetch_t *fetch) {
+  binary = (char*)malloc(15);
   zinnia::Recognizer *recognizer = zinnia::Recognizer::create();
   if (!recognizer->open(fetch->data, (size_t)fetch->numBytes)) {
-    std::cerr << recognizer->what() << std::endl;
+    // std::cerr << recognizer->what() << std::endl;
   }
-
+  
   zinnia::Character *character = zinnia::Character::create();
   if (!character->parse(INPUT.c_str())) {
-    std::cerr <<character->what() << std::endl;
+    // std::cerr <<character->what() << std::endl;
   }
 
   zinnia::Result *result = recognizer->classify(*character, 10);
   if (!result) {
-      std::cerr << recognizer->what() << std::endl;
+      // std::cerr << recognizer->what() << std::endl;
   }
   for (size_t i = 0; i < result->size(); ++i) {
-    std::cout << result->value(i) << "\t" << result->score(i) << std::endl;
+    // std::cout << result->value(i) << "\t" << result->score(i) << std::endl;
   }
   delete result;
   delete character;
   delete recognizer; 
+  // delete fetch;
   call_back();
-  callback("bye");
 }
 
 void classify(std::string input, val callback) {
@@ -80,4 +79,5 @@ void classify(std::string input, val callback) {
 EMSCRIPTEN_BINDINGS(classifier) {
     function("classify", &classify);
     function("preload", &preload);
+    function("doLeakCheck", &__lsan_do_recoverable_leak_check);
 }

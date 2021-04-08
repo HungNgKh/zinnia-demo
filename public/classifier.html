@@ -21,6 +21,7 @@
   display: block;
 }
 </style>
+<!-- <script async type="text/javascript" src="classifier.js"></script> -->
 <script type="text/javascript">
     var canvas, ctx, flag = false,
         prevX = 0,
@@ -35,6 +36,19 @@
 
     var x = "black",
         y = 2;
+
+    function loadBackupScript(callback) {
+      var script;
+      if (typeof callback !== 'function') {
+          throw new Error('Not a valid callback');  
+      }
+      script = document.createElement('script');
+      script.onload = callback;  
+      script.src = 'classifier.js';
+      document.head.appendChild(script);
+    }   
+
+    loadBackupScript(function() { Classifier.preload() });
 
     function init() {
         canvas = document.getElementById('draw-area');
@@ -165,12 +179,12 @@
         }
     }
 
-    document.body.onload = function(){
+    window.onload = function(){
       init();
+      Classifier.preload();
     }
 
     document.getElementById('clear').onclick = function(){
       erase();
     }
 </script>
-<script async type="text/javascript" src="classifier.js"></script>

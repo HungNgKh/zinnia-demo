@@ -106,35 +106,26 @@ Classifier.classify("input strokes", function callback(success, result) {
 ```
 ## Sequence
 
-### preload()
 ```mermaid
-sequenceDiagram;
-  participant Javascript
-  participant ClassifierModule
-  participant IndexedDB
-  participant RemoteServer
-  
-  Javascript->>ClassifierModule: async load()
-  activate ClassifierModule
-  ClassifierModule->>RemoteServer: FETCH request
-  RemoteServer->>IndexedDB: download to
-  RemoteServer-->>ClassifierModule: FETCH response
-  ClassifierModule-->>Javascript: invoke result callback
-  deactivate ClassifierModule
-```
+sequenceDiagram
+    participant js as Javascript
+    participant wasm as ClassifierModule
+    participant db as indexedDB
+    participant sv as RemoteServer
 
-### classify()
-
-```mermaid
-sequenceDiagram;
-  participant Javascript
-  participant ClassifierModule
-  participant IndexedDB
-
-  Javascript->>ClassifierModule: async classify(input)
-  activate ClassifierModule
-  ClassifierModule->>IndexedDB: FETCH model binary
-  IndexedDB-->>ClassifierModule: load binary to memory
-  ClassifierModule-->>Javascript: invoke result callback
-  deactivate ClassifierModule
+    Note over js, sv: initialize web page
+    js->>wasm: async preload()
+    wasm->>db: FETCH model binary
+    db-->>wasm: return 
+    alt return flase
+        wasm->>sv: FETCH request
+        sv-->>wasm: return model binary
+        wasm->>db: save model binary
+    end
+    wasm->>wasm: load model binary on memory
+    wasm-->>js: invoke result callback
+    Note over js, sv: use classify
+    js->>wasm: async classify(input)
+    wasm->>wasm: classify
+    wasm-->>js: invoke result callback<br>(charactors & similarity)
 ```
