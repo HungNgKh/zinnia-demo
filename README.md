@@ -61,13 +61,20 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 ## WebAssembly module
 
 ### Functions
-- preload() //Load model file from remote server to indexedDB 
-  - Parameter:
+- preload(callback(success){}) //Load model file from remote server to indexedDB 
+  - Parameter: 
+    - callback function:
+      - parameters:
+        - success: Boolean
   - Return: 
     
-- classify(input) // get saved model file from indexedDB then classify the input and print result.
-  - Parameter:
+- classify(input, callback(success, result){}) // get saved model file from indexedDB then classify the input and print result.
+  - Parameters:
     - input: formated handwriting strokes. Example: "(character (width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))"
+    - callback function:
+      - parameters:
+        - success: Boolean
+        - result: String. Example: "('あ': 0.8923, 'い': 0.342, 'う': 0.5462, 'え':0.234, 'お': 0.456)"
   - Return:
 
 ### Import module
@@ -79,11 +86,23 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 ### Use
 
 ```
-Classifier.preload();
+Classifier.preload(function callback(success) {
+  if(success == true) {
+    // TODO
+  } else {
+    // TODO
+  }
+});
 ```
 
 ```
-Classifier.classify("input");
+Classifier.classify("input strokes", function callback(success, result) {
+  if(success == true) {
+    // Do whatever we want with result
+  } else {
+    // TODO
+  }
+});
 ```
 ## Sequence
 
@@ -100,11 +119,7 @@ sequenceDiagram;
   ClassifierModule->>RemoteServer: FETCH request
   RemoteServer->>IndexedDB: download to
   RemoteServer-->>ClassifierModule: FETCH response
-  alt success
-    ClassifierModule-->>Javascript: success
-  else failed
-    ClassifierModule-->>Javascript: error
-  end
+  ClassifierModule-->>Javascript: invoke result callback
   deactivate ClassifierModule
 ```
 
@@ -120,10 +135,6 @@ sequenceDiagram;
   activate ClassifierModule
   ClassifierModule->>IndexedDB: FETCH model binary
   IndexedDB-->>ClassifierModule: load binary to memory
-  alt success
-    ClassifierModule-->>Javascript: success
-  else failed
-    ClassifierModule-->>Javascript: error
-  end
+  ClassifierModule-->>Javascript: invoke result callback
   deactivate ClassifierModule
 ```
