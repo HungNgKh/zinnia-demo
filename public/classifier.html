@@ -21,7 +21,7 @@
   display: block;
 }
 </style>
-<!-- <script async type="text/javascript" src="classifier.js"></script> -->
+<script async type="text/javascript" src="classifier.js"></script>
 <script type="text/javascript">
     var canvas, ctx, flag = false,
         prevX = 0,
@@ -32,23 +32,16 @@
         stroke_order = 0;
         stroke_number = 0;
         sequence = [];
-        Classifier = {};
-
+        Classifier = {
+          onRuntimeInitialized: function() {
+            Classifier.preload("https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-ja.model", function(success) {
+              console.log(success ? "Load successed" : "Load failed");
+            });
+          }
+        };
+    
     var x = "black",
         y = 2;
-
-    function loadBackupScript(callback) {
-      var script;
-      if (typeof callback !== 'function') {
-          throw new Error('Not a valid callback');  
-      }
-      script = document.createElement('script');
-      script.onload = callback;  
-      script.src = 'classifier.js';
-      document.head.appendChild(script);
-    }   
-
-    loadBackupScript(function() { Classifier.preload() });
 
     function init() {
         canvas = document.getElementById('draw-area');
@@ -91,9 +84,18 @@
             stroke_number = 0;
             // sendRequest();
             console.clear();
-            Classifier.classify(makeMessage(), function(msg) {
-              console.log(msg);
+            var result = Classifier.classify(makeMessage(), 10, function(res) {
+              var mapKeys = res.keys();
+              for (var i = 0; i < mapKeys.size(); i++) {
+                var key = mapKeys.get(i);
+                console.log("Map key/value: ", key, res.get(key));
+              }
             });
+            var mapKeys = result.keys();
+            for (var i = 0; i < mapKeys.size(); i++) {
+              var key = mapKeys.get(i);
+              console.log("Map key/value: ", key, result.get(key));
+            }
             // console.log(makeMessage());
         }
         if (res == 'move') {
@@ -181,7 +183,6 @@
 
     window.onload = function(){
       init();
-      Classifier.preload();
     }
 
     document.getElementById('clear').onclick = function(){
