@@ -61,8 +61,9 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 ## WebAssembly module
 
 ### Functions
-- preload(callback(success){}) //Load model file from remote server to indexedDB 
+- preload(Url, callback(success){}) //Load model file from remote server to indexedDB 
   - Parameter: 
+  　- Url: model file URL(from remote server)
     - callback function:
       - parameters:
         - success: Boolean
