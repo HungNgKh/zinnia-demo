@@ -96,9 +96,9 @@ Classifier.preload(function callback(success) {
 ```
 
 ```
-Classifier.classify("input strokes", function callback(success, result) {
+Classifier.classify("input strokes", items_count, function callback(success, result) {
   if(success == true) {
-    // Do whatever we want with result
+    // var json_result = JSON.parse(result);
   } else {
     // TODO
   }
