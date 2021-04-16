@@ -68,13 +68,14 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
         - success: Boolean
   - Return: 
     
-- classify(input, callback(success, result){}) // get saved model file from indexedDB then classify the input and print result.
+- classify(input, items_count, callback(success, result){}) // get saved model file from indexedDB then classify the input and print result.
   - Parameters:
     - input: formated handwriting strokes. Example: "(character (width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))"
+    - items_count: number of returned items 
     - callback function:
       - parameters:
         - success: Boolean
-        - result: String. Example: "('あ': 0.8923, 'い': 0.342, 'う': 0.5462, 'え':0.234, 'お': 0.456)"
+        - result: A Json like string. Example: {"あ": "0.8923", "い": "0.342", "う": "0.5462", "え":"0.234", "お": "0.456"}
   - Return:
 
 ### Import module
