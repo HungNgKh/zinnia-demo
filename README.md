@@ -4,10 +4,7 @@
 - ruby 2.2.0
 - rails 4.1.7
 - zinnia-0.0.6
-- zinnia-tomoe-0.6.0
-
 ## Zinnia
-
 ### Download
 https://sourceforge.net/projects/zinnia/files/
 
@@ -19,13 +16,35 @@ ruby extconf.rb
 make
 make install
 ```
+## Tomoe
+### Download
+https://sourceforge.net/projects/zinnia/files/
 
+### Create model files
 ```
 cd zinnia-tomoe-0.6.0-20080911
 ./configure
 make
 make install
 ```
+## Alphabet, katakana, arabic_numeric 
+### Download
+https://github.com/adokoy001/HWR-Learning-Data-Sets
+### Create model files (Require zinnia-learn)
+
+```
+zinnia-learn  learn_arabic_numeric.s arabic_numeric.model
+zinnia_learn learn_alphabet.s alphabet.model
+zinnia_learn learned_katakana.s katakana.model
+```
+
+## Model files URL
+
+- Handwriting-JA: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-ja.model
+- Handwriting-CN: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-zh_CN.model
+- Alphabet: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model
+- Katakana: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/katakana.model
+- Numeric: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/arabic_numeric.model
 
 ## APIs
 - home/top (GET)

@@ -34,7 +34,7 @@
         sequence = [];
         Classifier = {
           onRuntimeInitialized: function() {
-            Classifier.preload("https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-ja.model", function(success) {
+            Classifier.preload("https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model", function(success) {
               console.log(success ? "Load successed" : "Load failed");
             });
           }
