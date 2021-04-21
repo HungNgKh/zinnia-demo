@@ -112,7 +112,7 @@ std::string getURL(ModelIndex model_idx) {
   return url;
 }
 
-void load_model(ModelIndex model_idx, val callback) {
+void loadModel(ModelIndex model_idx, val callback) {
   std::string url = getURL(model_idx);
   if(url.length() <= 0) {
     std::cerr << "Invalid model index" << std::endl;
@@ -198,7 +198,7 @@ std::vector<std::vector<std::string>> returnVectorData () {
 
 EMSCRIPTEN_BINDINGS(classifier) {
   function("classify", &classify);
-  function("load_model", &load_model);
+  function("loadModel", &loadModel);
   enum_<ModelIndex>("Models")
         .value("ALPHABET", ALPHABET)
         .value("NUMERIC", NUMERIC)

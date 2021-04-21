@@ -1,24 +1,33 @@
-<div>
-    <canvas id="draw-area" width="300" height="300"></canvas>
-    <button id="clear" type="button">Clear</button>
-</div>
-<div id="result">
-    
+<div class="main_content">
+  <div class="draw-panel">
+    <div class="draw-area">
+      <canvas id="draw-canvas"></canvas>
+    </div>
+    <div>
+      <button id="clear" type="button">Clear</button>
+    </div>
+  </div>
+  <div id="result">
+  
+  </div>
 </div>
 
 <style type="text/css">
-#draw-area {
+.draw-panel {
+  width: 25%;
+  height: 250;
+}
+
+.draw-area canvas:first-of-type {
   background-color: gray;
-  float: left;
 }
 
 #result {
-  float: left;
   margin-left: 10px;
 }
 
 #clear {
-  display: block;
+  height: 50;
 }
 </style>
 <script async type="text/javascript" src="classifier.js"></script>
@@ -44,7 +53,7 @@
         y = 2;
 
     function init() {
-        canvas = document.getElementById('draw-area');
+        canvas = document.getElementById('draw-canvas');
         ctx = canvas.getContext("2d");
         w = canvas.width;
         h = canvas.height;
