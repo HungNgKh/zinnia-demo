@@ -45,12 +45,12 @@ zinnia_learn learned_katakana.s katakana.model
 - Alphabet: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model
 - Katakana: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/katakana.model
 - Numeric: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/arabic_numeric.model
-- 青葉出版（第一年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_first_grade.model
-- 青葉出版（第二年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_second_grade.model
-- 青葉出版（第三年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_third_grade.model
-- 青葉出版（第四年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fourth_grade.model
-- 青葉出版（第五年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fifth_grade.model
-- 青葉出版（第六年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_sixth_grade.model
+- 青葉出版（第一年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_first_grade.model
+- 青葉出版（第二年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_second_grade.model
+- 青葉出版（第三年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_third_grade.model
+- 青葉出版（第四年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fourth_grade.model
+- 青葉出版（第五年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fifth_grade.model
+- 青葉出版（第六年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_sixth_grade.model
 
 ## APIs
 - home/top (GET)
