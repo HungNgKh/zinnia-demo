@@ -174,5 +174,5 @@ sequenceDiagram
     Note over js, sv: use classify
     js->>wasm: async classify(input)
     wasm->>wasm: classify
-    wasm-->>js: invoke result callback(charactors & similarity)
+    wasm-->>js: invoke result callback(characters & similarity value)
 ```
