@@ -14,12 +14,12 @@ enum ModelIndex {
   KATAKANA,
   JAPANESE,
   CHINESE,
-  AOBA_FIRST_GRADE,
-  AOBA_SECOND_GRADE,
-  AOBA_THIRD_GRADE,
-  AOBA_FOURTH_GRADE,
-  AOBA_FIFTH_GRADE,
-  AOBA_SIXTH_GRADE,
+  FIRST_GRADE,
+  SECOND_GRADE,
+  THIRD_GRADE,
+  FOURTH_GRADE,
+  FIFTH_GRADE,
+  SIXTH_GRADE,
   NUMBER_OF_MODELS
 };
 
@@ -88,23 +88,23 @@ std::string getURL(ModelIndex model_idx) {
     case CHINESE:
       url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-zh_CN.model";
       break;
-    case AOBA_FIRST_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_first_grade.model";
+    case FIRST_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/first_grade.model";
       break;
-    case AOBA_SECOND_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_second_grade.model";
+    case SECOND_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/second_grade.model";
       break;
-    case AOBA_THIRD_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_third_grade.model";
+    case THIRD_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/third_grade.model";
       break;
-    case AOBA_FOURTH_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fourth_grade.model";
+    case FOURTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fourth_grade.model";
       break;
-    case AOBA_FIFTH_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fifth_grade.model";
+    case FIFTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fifth_grade.model";
       break;
-    case AOBA_SIXTH_GRADE:
-      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_sixth_grade.model";
+    case SIXTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/sixth_grade.model";
       break;
     default:
       url =  "";
@@ -205,10 +205,10 @@ EMSCRIPTEN_BINDINGS(classifier) {
         .value("KATAKANA", KATAKANA)
         .value("JAPANESE", JAPANESE)
         .value("CHINESE", CHINESE)
-        .value("AOBA_FIRST_GRADE", AOBA_FIRST_GRADE)
-        .value("AOBA_SECOND_GRADE", AOBA_SECOND_GRADE)
-        .value("AOBA_THIRD_GRADE", AOBA_THIRD_GRADE)
-        .value("AOBA_FOURTH_GRADE", AOBA_FOURTH_GRADE)
-        .value("AOBA_FIFTH_GRADE", AOBA_FIFTH_GRADE)
-        .value("AOBA_SIXTH_GRADE", AOBA_SIXTH_GRADE);
+        .value("FIRST_GRADE", FIRST_GRADE)
+        .value("SECOND_GRADE", SECOND_GRADE)
+        .value("THIRD_GRADE", THIRD_GRADE)
+        .value("FOURTH_GRADE", FOURTH_GRADE)
+        .value("FIFTH_GRADE", FIFTH_GRADE)
+        .value("SIXTH_GRADE", SIXTH_GRADE);
 }

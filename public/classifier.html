@@ -43,7 +43,7 @@
         sequence = [],
         Classifier = {
           onRuntimeInitialized: function() {
-            Classifier.load_model(Classifier.Models.AOBA_SIXTH_GRADE, function(success) {
+            Classifier.loadModel(Classifier.Models.SIXTH_GRADE, function(success) {
               console.log(success ? "Load successed" : "Load failed");
             });
           }
@@ -92,7 +92,7 @@
             stroke_order++;
             stroke_number = 0;
             console.clear();
-            var result = Classifier.classify(makeMessage(), Classifier.Models.AOBA_SIXTH_GRADE, 10, function(success, res) {
+            var result = Classifier.classify(makeMessage(), Classifier.Models.SIXTH_GRADE, 10, function(success, res) {
               if(success) {
                 console.log(res);
                 var json = JSON.parse(res);
