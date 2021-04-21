@@ -29,12 +29,12 @@
         prevY = 0,
         currY = 0,
         dot_flag = false,
-        stroke_order = 0;
-        stroke_number = 0;
-        sequence = [];
+        stroke_order = 0,
+        stroke_number = 0,
+        sequence = [],
         Classifier = {
           onRuntimeInitialized: function() {
-            Classifier.preload("https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model", function(success) {
+            Classifier.load_model(Classifier.Models.AOBA_SIXTH_GRADE, function(success) {
               console.log(success ? "Load successed" : "Load failed");
             });
           }
@@ -82,9 +82,8 @@
             flag = false;
             stroke_order++;
             stroke_number = 0;
-            // sendRequest();
             console.clear();
-            var result = Classifier.classify(makeMessage(), 10, function(success, res) {
+            var result = Classifier.classify(makeMessage(), Classifier.Models.AOBA_SIXTH_GRADE, 10, function(success, res) {
               if(success) {
                 console.log(res);
                 var json = JSON.parse(res);
@@ -93,14 +92,6 @@
                 console.log("Failed to classify");
               }
             });
-            // var mapKeys = result.keys();
-            // console.log(result.size());
-            // console.log(result.get("haha"));
-            // for (var i = 0; i < mapKeys.size(); i++) {
-            //   var key = mapKeys.get(i);
-            //   console.log("Map key/value: ", key, result.get(key));
-            // }
-            // console.log(makeMessage());
         }
         if (res == 'move') {
             if (flag) {
@@ -134,22 +125,22 @@
 	    stroke_number = 0;
     }
 
-    function sendRequest() {
-        var data = makeMessage();
-        var xhr = new XMLHttpRequest();
+    // function sendRequest() {
+    //     var data = makeMessage();
+    //     var xhr = new XMLHttpRequest();
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4){
-                if(xhr.status == 200) {
-                    var obj = JSON.parse(xhr.response);
-                    updateResult(obj);
-                }
+    //     xhr.onreadystatechange = function() {
+    //         if (xhr.readyState === 4){
+    //             if(xhr.status == 200) {
+    //                 var obj = JSON.parse(xhr.response);
+    //                 updateResult(obj);
+    //             }
                 
-            }
-        };
-        xhr.open('GET', '/home/classify?' + data, true);
-        xhr.send();
-    }
+    //         }
+    //     };
+    //     xhr.open('GET', '/home/classify?' + data, true);
+    //     xhr.send();
+    // }
     
     function makeMessage() {
         var str = "(character (width " + canvas.width + ")(height " + canvas.height + ")(strokes ";

@@ -8,60 +8,139 @@
 
 using namespace emscripten;
 
-static std::string URL;
-static emscripten_fetch_t *fetched_model;
-val preload_call_back = val::null();
-// val classify_call_back = val::null();
+enum ModelIndex {
+  ALPHABET = 0,
+  NUMERIC,
+  KATAKANA,
+  JAPANESE,
+  CHINESE,
+  AOBA_FIRST_GRADE,
+  AOBA_SECOND_GRADE,
+  AOBA_THIRD_GRADE,
+  AOBA_FOURTH_GRADE,
+  AOBA_FIFTH_GRADE,
+  AOBA_SIXTH_GRADE,
+  NUMBER_OF_MODELS
+};
+
+typedef struct FetchUserData {
+  ModelIndex model_index;
+  val callback = val::null();
+} FetchUserData;
+
+typedef emscripten_fetch_t* PreloadedModel;
+
+static PreloadedModel models[NUMBER_OF_MODELS];
+
+// val preload_call_back = val::null();
 
 void preload_success(emscripten_fetch_t *fetch) {
+  FetchUserData* userdata = (FetchUserData*)fetch->userData;
   if(fetch->numBytes > 0) {
-    fetched_model = fetch;
-    preload_call_back(true);
+    models[userdata->model_index] = fetch;
+    userdata->callback(true);
   } else {
-    preload_call_back(false);
-  } 
-}
-
-void preload_failure(emscripten_fetch_t *fetch) {
-  std::cerr << "Failed to load model" << std::endl;
-  emscripten_fetch_close(fetch);
-}
-
-void downloadFileToIndexedDB() {
-  emscripten_fetch_attr_t attr;
-  emscripten_fetch_attr_init(&attr);
-  strcpy(attr.requestMethod, "GET");
-  attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_PERSIST_FILE | EMSCRIPTEN_FETCH_REPLACE;
-  // attr.requestData = data;
-  // attr.requestDataSize = numBytes;
-  attr.onsuccess = preload_success;
-  attr.onerror = preload_failure;
-  emscripten_fetch(&attr, URL.c_str());
-}
-
-void idxdb_load_failure(emscripten_fetch_t *fetch) {
-  emscripten_fetch_close(fetch);
-  downloadFileToIndexedDB();
-}
-
-void preload(std::string url, val callback) {
-  preload_call_back = callback;
-  if(!fetched_model) {
-    URL = url;
-    emscripten_fetch_attr_t attr;
-    emscripten_fetch_attr_init(&attr);
-    attr.onsuccess = preload_success;
-    attr.onerror = idxdb_load_failure;
-    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_PERSIST_FILE | EMSCRIPTEN_FETCH_NO_DOWNLOAD;
-    emscripten_fetch(&attr, URL.c_str());
+    userdata->callback(false);
   }
 }
 
-void classify(std::string input, int item_count, val callback){
+void preload_failure(emscripten_fetch_t *fetch) {
+  FetchUserData* userdata = (FetchUserData*)fetch->userData;
+  userdata->callback(false);
+  emscripten_fetch_close(fetch);
+}
+
+void downloadFileToIndexedDB(emscripten_fetch_t *fetch) {
+  if(fetch) {
+    emscripten_fetch_attr_t attr;
+    emscripten_fetch_attr_init(&attr);
+    strcpy(attr.requestMethod, "GET");
+    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_PERSIST_FILE | EMSCRIPTEN_FETCH_REPLACE;
+    attr.onsuccess = preload_success;
+    attr.onerror = preload_failure;
+    attr.userData = fetch->userData;
+    emscripten_fetch(&attr, fetch->url);
+  } else {
+    preload_failure(nullptr);
+  }
+}
+
+void idxdb_load_failure(emscripten_fetch_t *fetch) {
+  downloadFileToIndexedDB(fetch);
+  emscripten_fetch_close(fetch);
+}
+
+std::string getURL(ModelIndex model_idx) {
+  std::string url;
+  switch (model_idx) {
+    case ALPHABET:
+      url =  "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model";
+      break;
+    case NUMERIC:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/arabic_numeric.model";
+      break;
+    case KATAKANA:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/katakana.model";
+      break;
+    case JAPANESE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-ja.model";
+      break;
+    case CHINESE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/handwriting-zh_CN.model";
+      break;
+    case AOBA_FIRST_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_first_grade.model";
+      break;
+    case AOBA_SECOND_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_second_grade.model";
+      break;
+    case AOBA_THIRD_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_third_grade.model";
+      break;
+    case AOBA_FOURTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fourth_grade.model";
+      break;
+    case AOBA_FIFTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fifth_grade.model";
+      break;
+    case AOBA_SIXTH_GRADE:
+      url = "https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_sixth_grade.model";
+      break;
+    default:
+      url =  "";
+  }
+  return url;
+}
+
+void load_model(ModelIndex model_idx, val callback) {
+  std::string url = getURL(model_idx);
+  if(url.length() <= 0) {
+    std::cerr << "Invalid model index" << std::endl;
+    callback(false);
+    return;
+  }
+
+  if(!models[model_idx]->data || models[model_idx]->numBytes <= 0) {
+    emscripten_fetch_attr_t attr;
+    emscripten_fetch_attr_init(&attr);
+    FetchUserData* userdata = new FetchUserData();
+    userdata->model_index = model_idx;
+    userdata->callback = callback;
+    attr.onsuccess = preload_success;
+    attr.userData = (void*)userdata;
+    attr.onerror = idxdb_load_failure;
+    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_PERSIST_FILE | EMSCRIPTEN_FETCH_NO_DOWNLOAD;
+    emscripten_fetch(&attr, url.c_str());
+  }
+}
+
+void classify(std::string input, ModelIndex model_idx, int item_count, val callback){
   std::stringstream result_json;
+  PreloadedModel model = models[model_idx];
+  std::cout << model->url << "\t" << model->numBytes << "\t" << model->data << std::endl;
   zinnia::Recognizer *recognizer = zinnia::Recognizer::create();
-  if (!recognizer->open(fetched_model->data, (size_t)fetched_model->numBytes)) {
-    // std::cerr << "recognizer: " << recognizer->what() << std::endl;
+  if (!recognizer->open(model->data ,static_cast<size_t>(model->numBytes))) {
+    std::cerr << "recognizer: " << recognizer->what() << std::endl;
     callback(false, result_json.str());
     delete recognizer;
     return;
@@ -119,10 +198,17 @@ std::vector<std::vector<std::string>> returnVectorData () {
 
 EMSCRIPTEN_BINDINGS(classifier) {
   function("classify", &classify);
-  function("preload", &preload);
-  function("returnMapData", &returnMapData);
-  function("returnVectorData",&returnVectorData, allow_raw_pointers());
-  // register_map<std::string, double>("map<string, double>");
-  register_vector<std::vector<std::string>>("vector<std::vector<std::string>");
-  register_map<std::wstring, double>("map<wstring, double>");
+  function("load_model", &load_model);
+  enum_<ModelIndex>("Models")
+        .value("ALPHABET", ALPHABET)
+        .value("NUMERIC", NUMERIC)
+        .value("KATAKANA", KATAKANA)
+        .value("JAPANESE", JAPANESE)
+        .value("CHINESE", CHINESE)
+        .value("AOBA_FIRST_GRADE", AOBA_FIRST_GRADE)
+        .value("AOBA_SECOND_GRADE", AOBA_SECOND_GRADE)
+        .value("AOBA_THIRD_GRADE", AOBA_THIRD_GRADE)
+        .value("AOBA_FOURTH_GRADE", AOBA_FOURTH_GRADE)
+        .value("AOBA_FIFTH_GRADE", AOBA_FIFTH_GRADE)
+        .value("AOBA_SIXTH_GRADE", AOBA_SIXTH_GRADE);
 }

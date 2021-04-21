@@ -45,6 +45,12 @@ zinnia_learn learned_katakana.s katakana.model
 - Alphabet: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model
 - Katakana: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/katakana.model
 - Numeric: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/arabic_numeric.model
+- 青葉出版（第一年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_first_grade.model
+- 青葉出版（第二年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_second_grade.model
+- 青葉出版（第三年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_third_grade.model
+- 青葉出版（第四年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fourth_grade.model
+- 青葉出版（第五年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_fifth_grade.model
+- 青葉出版（第六年生）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/aoba_sixth_grade.model
 
 ## APIs
 - home/top (GET)
@@ -79,18 +85,31 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 
 ## WebAssembly module
 
+### Model index
+- Classifier.Models.ALPHABET
+- Classifier.Models.NUMERIC
+- Classifier.Models.KATAKANA
+- Classifier.Models.JAPANESE
+- Classifier.Models.CHINESE
+- Classifier.Models.AOBA_FIRST_GRADE
+- Classifier.Models.AOBA_SECOND_GRADE
+- Classifier.Models.AOBA_THIRD_GRADE
+- Classifier.Models.AOBA_FOURTH_GRADE
+- Classifier.Models.AOBA_FIFTH_GRADE
+- Classifier.Models.AOBA_SIXTH_GRADE
 ### Functions
-- preload(Url, callback(success){}) //Load model file from remote server to indexedDB 
+- loadModel(Model_index, callback(success){}) //Load model file from remote server to indexedDB 
   - Parameter: 
-    - Url: model file URL(from remote server)
+    - Model_index: An enum that determine which model will be loaded(eg: Classifier.Models.ALPHABET, Classifier.Models.KATAKANA)
     - callback function:
       - parameters:
         - success: Boolean
   - Return: 
     
-- classify(input, items_count, callback(success, result){}) // get saved model file from indexedDB then classify the input and print result.
+- classify(input, Model_index, items_count, callback(success, result){}) // get saved model file from indexedDB then classify the input and print result.
   - Parameters:
     - input: formated handwriting strokes. Example: "(character (width 1000)(height 1000)(strokes ((243 273)(393 450))((700 253)(343 486)(280 716)(393 866)(710 880))))"
+    - Model_index: An enum that determine which recognizer model will be used(eg: Classifier.Models.ALPHABET, Classifier.Models.KATAKANA)
     - items_count: number of returned items 
     - callback function:
       - parameters:
@@ -104,22 +123,29 @@ em++ --bind -lidbfs.js -o classifier.html -s WASM=1 -s FETCH=1 -s tests/classifi
 <script async type="text/javascript" src="classifier.js"></script>
 ```
 
-### Use
+### Example 
 
 ```
-Classifier.preload(function callback(success) {
-  if(success == true) {
-    // TODO
-  } else {
-    // TODO
+Classifier = {
+  onRuntimeInitialized: function() {
+    Classifier.loadModel(Classifier.Models.ALPHABET, function callback(success) {
+      if(success == true) {
+        // TODO
+      } else {
+        // TODO
+      }
+    });
+    ...
   }
-});
+};
+
 ```
 
 ```
-Classifier.classify("input strokes", items_count, function callback(success, result) {
+Classifier.classify("input strokes", Classifier.Models.ALPHABET, items_count, function callback(success, result) {
   if(success == true) {
     // var json_result = JSON.parse(result);
+    // TODO
   } else {
     // TODO
   }
@@ -135,7 +161,7 @@ sequenceDiagram
     participant sv as RemoteServer
 
     Note over js, sv: initialize web page
-    js->>wasm: async preload()
+    js->>wasm: async loadModel()
     wasm->>db: FETCH model binary
     db-->>wasm: return 
     alt return flase
