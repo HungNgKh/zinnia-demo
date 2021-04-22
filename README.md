@@ -45,12 +45,12 @@ zinnia_learn learned_katakana.s katakana.model
 - Alphabet: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/alphabet.model
 - Katakana: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/katakana.model
 - Numeric: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/arabic_numeric.model
-- 青葉出版（第一年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/first_grade.model
-- 青葉出版（第二年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/second_grade.model
-- 青葉出版（第三年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/third_grade.model
-- 青葉出版（第四年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fourth_grade.model
-- 青葉出版（第五年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fifth_grade.model
-- 青葉出版（第六年）: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/sixth_grade.model
+- 第一年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/first_grade.model
+- 第二年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/second_grade.model
+- 第三年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/third_grade.model
+- 第四年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fourth_grade.model
+- 第五年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/fifth_grade.model
+- 第六年: https://zinnia-demo.s3-ap-northeast-1.amazonaws.com/sixth_grade.model
 
 ## APIs
 - home/top (GET)
