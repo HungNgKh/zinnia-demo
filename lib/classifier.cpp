@@ -137,7 +137,7 @@ void loadModel(ModelIndex model_idx, val callback) {
 void classify(std::string input, ModelIndex model_idx, int item_count, val callback){
   std::stringstream result_json;
   PreloadedModel model = models[model_idx];
-  std::cout << model->url << "\t" << model->numBytes << "\t" << model->data << std::endl;
+  // std::cout << model->url << "\t" << model->numBytes << "\t" << model->data << std::endl;
   zinnia::Recognizer *recognizer = zinnia::Recognizer::create();
   if (!recognizer->open(model->data ,static_cast<size_t>(model->numBytes))) {
     std::cerr << "recognizer: " << recognizer->what() << std::endl;
@@ -170,11 +170,11 @@ void classify(std::string input, ModelIndex model_idx, int item_count, val callb
   }
   
   if (character != nullptr) {
-    std::cerr << "freeing character" << std::endl;
+    // std::cerr << "freeing character" << std::endl;
     delete character;
   }
   if (recognizer != nullptr) {
-    std::cerr << "freeing recognizer" << std::endl;
+    // std::cerr << "freeing recognizer" << std::endl;
     delete recognizer;
   }
   // return output_map;
